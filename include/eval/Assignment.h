@@ -8,10 +8,10 @@ namespace bcc {
 
     class Assignment : public Term {
     private:
-        std::string lhs;
+        tptr_t lhs;
         tptr_t rhs;
     public:
-        Assignment(std::string lhs, tptr_t rhs);
+        Assignment(tptr_t lhs, tptr_t rhs);
 
         std::ostream & printToStream(std::ostream &out) const override;
     };
