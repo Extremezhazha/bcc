@@ -15,7 +15,7 @@ add_flex_bison_dependency(Lexer Parser)
 add_library(bccparse
         STATIC
         ${FLEX_Lexer_OUTPUTS}
-        ${BISON_Parser_OUTPUTS} lib/ast/ASTNode.cpp include/ast/ASTNode.h lib/ParserDriver.cpp include/ParserDriver.h parse/BccLexer.h lib/ast/nodes/ID.cpp include/ast/nodes/ID.h lib/REPLDriver.cpp include/REPLDriver.h include/ASTNodeAcceptor.h include/ast/nodes/BinaryArithmeticOperator.h)
+        ${BISON_Parser_OUTPUTS} lib/ast/ASTNode.cpp include/ast/ASTNode.h lib/ParserDriver.cpp include/ParserDriver.h parse/BccLexer.h lib/ast/nodes/ID.cpp include/ast/nodes/ID.h lib/REPLDriver.cpp include/REPLDriver.h include/ASTNodeAcceptor.h include/ast/nodes/BinaryArithmeticOperator.h lib/ast/nodes/ArrayLiteral.cpp include/ast/nodes/ArrayLiteral.h lib/ast/nodes/GetFromArrayStatement.cpp include/ast/nodes/GetFromArrayStatement.h)
 
 target_include_directories(bccparse PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(bccparse PUBLIC include parse)
@@ -37,7 +37,7 @@ add_executable(bcc main.cpp
         include/eval/operators/Minus.h
         include/eval/operators/Multiply.h
         lib/eval/operators/Multiply.cpp
-        lib/eval/arrays/Array.cpp include/eval/arrays/Array.h lib/eval/arrays/GetFromArray.cpp include/eval/arrays/GetFromArray.h lib/ast/ASTNode.cpp include/ast/ASTNode.h lib/ParserDriver.cpp include/ParserDriver.h lib/ast/nodes/Literal.cpp include/ast/nodes/Literal.h parse/BccLexer.h lib/ast/nodes/ID.cpp include/ast/nodes/ID.h lib/REPLDriver.cpp include/REPLDriver.h include/ASTNodeAcceptor.h include/ast/nodes/BinaryArithmeticOperator.h include/eval/operators/Divide.h lib/eval/operators/Divide.cpp)
+        lib/eval/arrays/Array.cpp include/eval/arrays/Array.h lib/eval/arrays/GetFromArray.cpp include/eval/arrays/GetFromArray.h lib/ast/ASTNode.cpp include/ast/ASTNode.h lib/ParserDriver.cpp include/ParserDriver.h lib/ast/nodes/Literal.cpp include/ast/nodes/Literal.h parse/BccLexer.h lib/ast/nodes/ID.cpp include/ast/nodes/ID.h lib/REPLDriver.cpp include/REPLDriver.h include/ASTNodeAcceptor.h include/ast/nodes/BinaryArithmeticOperator.h include/eval/operators/Divide.h lib/eval/operators/Divide.cpp lib/ast/nodes/ArrayLiteral.cpp include/ast/nodes/ArrayLiteral.h lib/ast/nodes/GetFromArrayStatement.cpp include/ast/nodes/GetFromArrayStatement.h)
 
 target_link_libraries(bcc bccparse)
 target_include_directories(bcc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

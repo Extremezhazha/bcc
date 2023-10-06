@@ -1,5 +1,6 @@
 %{
 #include <iostream>
+#include <vector>
 #include <string>
 #include <memory>
 #include <cmath>
@@ -8,6 +9,8 @@
 #include "ast/nodes/Literal.h"
 #include "ast/nodes/ID.h"
 #include "ast/nodes/BinaryArithmeticOperator.h"
+#include "ast/nodes/ArrayLiteral.h"
+#include "ast/nodes/GetFromArrayStatement.h"
 
 
 #include "BccParser.h"
@@ -53,6 +56,7 @@
 
 
 %token EOL LPAREN RPAREN
+%token COMMA LBRACKET RBRACKET
 %token PRINTSTMT
 %token ASSIGN
 %token <std::string> ID
@@ -62,6 +66,8 @@
 %nterm <bcc::AST::node_ptr_t>  rvalexp
 %nterm <bcc::AST::node_ptr_t>  assign
 %nterm <bcc::AST::node_ptr_t>  print
+%nterm <bcc::AST::node_ptr_t>  arraystmt
+%nterm <std::vector<bcc::AST::node_ptr_t>>  arrayelemlist
 
 %nonassoc           ASSIGN
 %left               PLUS MINUS
@@ -70,7 +76,7 @@
 %%
 
 line: YYEOF
-    | rvalexp YYEOF { parseDriver.emit($1); }
+    | rvalexp YYEOF { parseDriver.emitPrint($1); }
     | print YYEOF  { parseDriver.emitPrint($1); }
     | assign YYEOF { parseDriver.emit($1); }
     ;
@@ -82,7 +88,16 @@ rvalexp: INT   { $$ = std::make_unique<bcc::AST::nodes::Literal>($1); }
     | rvalexp MULTIPLY rvalexp { $$ = std::make_unique<bcc::AST::nodes::Multiply>(std::move($1), std::move($3)); }
     | rvalexp DIVIDE rvalexp   { $$ = std::make_unique<bcc::AST::nodes::Divide>(std::move($1), std::move($3)); }
     | LPAREN rvalexp RPAREN        { $$ = $2; }
+    | arraystmt { $$ = std::move($1); }
     ;
+
+arraystmt: LBRACKET RBRACKET  { $$ = std::make_unique<bcc::AST::nodes::ArrayLiteral>(std::vector<bcc::AST::node_ptr_t>{}); }
+    | LBRACKET arrayelemlist RBRACKET  { $$ = std::make_unique<bcc::AST::nodes::ArrayLiteral>(std::move($2)); }
+    | rvalexp LBRACKET rvalexp RBRACKET { $$ = std::make_unique<bcc::AST::nodes::GetFromArrayStatement>(std::move($1), std::move($3)); }
+    ;
+
+arrayelemlist: rvalexp { $$ = std::vector<bcc::AST::node_ptr_t>{}; $$.emplace_back(std::move($1)); }
+    | arrayelemlist COMMA rvalexp { $$ = std::move($1); $$.emplace_back(std::move($3)); }
 
 assign: lvalexp ASSIGN rvalexp { $$ = std::make_unique<bcc::AST::nodes::Assign>(std::move($1), std::move($3)); }
 
